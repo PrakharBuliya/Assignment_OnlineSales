@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import FormField from "./FormField";
 import "./FormGenerator.css";
 
 const FormGenerator = () => {
@@ -7,10 +8,8 @@ const FormGenerator = () => {
   const [formErrors, setFormErrors] = useState({});
 
   const handleAddField = (fieldType) => {
-    // Prompt user for a label
     const label = prompt("Enter a label for this field:");
 
-    // If the user cancels, do nothing
     if (label === null) {
       return;
     }
@@ -59,7 +58,6 @@ const FormGenerator = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (handleValidation()) {
-      // Perform form submission logic here
       console.log("Form data submitted:", formData);
     } else {
       console.log("Form validation failed");
@@ -67,13 +65,11 @@ const FormGenerator = () => {
   };
 
   const handleSaveConfig = () => {
-    // Save form configuration as JSON data
     const formConfig = JSON.stringify(formFields);
     console.log("Form configuration saved:", formConfig);
   };
 
   const handleLoadConfig = (config) => {
-    // Load form configuration from JSON data
     const parsedConfig = JSON.parse(config);
     setFormFields(parsedConfig);
     setFormData({});
@@ -85,55 +81,14 @@ const FormGenerator = () => {
       <h1>Form Generator</h1>
       <form onSubmit={handleSubmit}>
         {formFields.map((field) => (
-          <div key={field.id}>
-            <label>{field.label || `Field ${field.id}`}</label>
-            {field.type === "text" && (
-              <input
-                type="text"
-                sss
-                value={formData[field.id]}
-                onChange={(e) => handleInputChange(field.id, e.target.value)}
-              />
-            )}
-            {field.type === "textarea" && (
-              <textarea
-                value={formData[field.id]}
-                onChange={(e) => handleInputChange(field.id, e.target.value)}
-              />
-            )}
-            {field.type === "dropdown" && (
-              <select
-                value={formData[field.id]}
-                onChange={(e) => handleInputChange(field.id, e.target.value)}
-              >
-                {field.options.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </select>
-            )}
-            {field.type === "checkbox" && (
-              <input
-                type="checkbox"
-                checked={formData[field.id]}
-                onChange={(e) => handleInputChange(field.id, e.target.checked)}
-              />
-            )}
-            {field.type === "radio" && (
-              <input
-                type="radio"
-                checked={formData[field.id]}
-                onChange={(e) => handleInputChange(field.id, e.target.checked)}
-              />
-            )}
-            <button type="button" onClick={() => handleRemoveField(field.id)}>
-              Remove
-            </button>
-            {formErrors[field.id] && (
-              <p style={{ color: "red" }}>{formErrors[field.id]}</p>
-            )}
-          </div>
+          <FormField
+            key={field.id}
+            field={field}
+            formData={formData}
+            handleInputChange={handleInputChange}
+            handleRemoveField={handleRemoveField}
+            formErrors={formErrors}
+          />
         ))}
         <div>
           <button type="button" onClick={() => handleAddField("text")}>
